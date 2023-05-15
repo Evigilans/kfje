@@ -1,0 +1,47 @@
+version: "3.7"
+
+services:
+  database:
+    image: postgres:latest
+    ports:
+      - "65432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data.sql:/docker-entrypoint-initdb.d/data.sql
+    networks:
+      backend:
+        aliases:
+          - "database"
+
+  userservice:
+    image: evigilans/user-service:1.0.0
+    depends_on:
+      database:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - backend
+
+  postservice:
+    image: evigilans/post-service:1.0.0
+    depends_on:
+      database:
+        condition: service_started
+    ports:
+      - "8081:8081"
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
