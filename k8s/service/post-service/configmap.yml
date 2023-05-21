@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: post-service
+data:
+  application.yml: |-
+    spring:
+      application:
+        name: post-service
+      datasource:
+        url: jdbc:postgresql://database:65432/postgres
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+        driver-class-name: org.postgresql.Driver
+      jpa:
+        database: POSTGRESQL
+        hibernate:
+          ddl-auto: update
+        properties:
+          hibernate:
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+            naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+        show-sql: true
+      cloud:
+        kubernetes:
+          discovery:
+            all-namespaces: true
+          secrets:
+            enableApi: true
+          reload:
+            enabled: true
+            monitoring-secrets: true
