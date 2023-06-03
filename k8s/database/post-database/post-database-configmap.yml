@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: post-database-configmap
+  namespace: kfje-namespace
+  labels:
+    app: post-database-statefulset
+data:
+  POSTGRES_DATABASE: "postgres"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "pstgrpsw"

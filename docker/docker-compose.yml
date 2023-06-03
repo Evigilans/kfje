@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  database:
+  user-database:
     image: postgres:latest
     ports:
       - "65432:5432"
@@ -9,20 +9,35 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./data.sql:/docker-entrypoint-initdb.d/data.sql
+      - ./user-database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./user-database/data.sql:/docker-entrypoint-initdb.d/data.sql
     networks:
       backend:
         aliases:
-          - "database"
+          - "user-database"
+
+  post-database:
+    image: postgres:latest
+    ports:
+      - "65433:5432"
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./post-database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./post-database/data.sql:/docker-entrypoint-initdb.d/data.sql
+    networks:
+      backend:
+        aliases:
+          - "post-database"
 
   userservice:
     image: evigilans/user-service:1.0.0
     depends_on:
-      database:
+      user-database:
         condition: service_started
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -32,10 +47,10 @@ services:
   postservice:
     image: evigilans/post-service:1.0.0
     depends_on:
-      database:
+      post-database:
         condition: service_started
     ports:
-      - "8081:8081"
+      - "8082:8082"
     environment:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}

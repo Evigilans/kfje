@@ -2,48 +2,33 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-service-deployment
-  labels:
-    app: user-service
+  namespace: kfje-namespace
 spec:
-  replicas: 2
   selector:
     matchLabels:
-      app: user-service
+      app: user-service-deployment
+  replicas: 2
   template:
     metadata:
       labels:
-        app: user-service
+        app: user-service-deployment
     spec:
       containers:
-        - name: user-service
+        - name: user-service-container
           image: evigilans/user-service:1.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
-          envFrom:
-            - secretRef:
-                name: user-service
+          volumeMounts:
+            - mountPath: /home/evigilans
+              name: user-service-pvc-mount
           env:
-            - name: TEST
-              value: usersrv
-          startupProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8081
-            failureThreshold: 30
-            periodSeconds: 40
-          livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8081
-            failureThreshold: 2
-            periodSeconds: 3
-            successThreshold: 1
-          readinessProbe:
-            httpGet:
-              path: /actuator/health/readiness
-              port: 8081
-            failureThreshold: 2
-            periodSeconds: 3
-            successThreshold: 1
+            - name: DB_USERNAME
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "pstgrpsw"
+      volumes:
+        - name: user-service-pvc-mount
+          persistentVolumeClaim:
+            claimName: user-service-pvc
       restartPolicy: Always

@@ -16,11 +16,19 @@ function runResource() {
 
 cd ../k8s
 
+echo "Applying namespace"
+kubectl apply -f namespace.yml
+
+echo "Starting databases"
+runResource database/post-database post-database
+runResource database/user-database user-database
+
+sleep 10s
+echo "Databases started!"
+
 echo "Starting services"
 runResource service/post-service post-service
 runResource service/user-service user-service
 
-kubectl get pods
 sleep 10s
-
-echo "All services started!"
+echo "Services started!"

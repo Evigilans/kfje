@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "user-updater", url = "http://userservice:8080/")
+@FeignClient(value = "user-updater", url = "http://user-service:8081/")
 public interface UserClient {
 
     @GetMapping(value = "/users/{userId}", produces = "application/json")

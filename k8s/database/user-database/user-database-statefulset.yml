@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: user-database-statefulset
+  namespace: kfje-namespace
+spec:
+  serviceName: user-database-statefulset
+  selector:
+    matchLabels:
+      app: user-database-statefulset
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: user-database-statefulset
+    spec:
+      containers:
+        - name: user-database-statefulset
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: user-database-configmap
+          volumeMounts:
+            - mountPath: "/data"
+              name: user-database-data
+      restartPolicy: Always
+  volumeClaimTemplates:
+    - metadata:
+        name: user-database-data
+      spec:
+        storageClassName: hostpath
+        resources:
+          requests:
+            storage: 10Gi
+        accessModes:
+          - ReadWriteMany
