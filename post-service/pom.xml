@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.epam</groupId>
     <artifactId>post-service</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <name>post-service</name>
     <description>post-service</description>
     <properties>

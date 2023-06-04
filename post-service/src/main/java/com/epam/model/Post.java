@@ -24,6 +24,9 @@ public class Post {
     @Column(name = "text", nullable = false)
     private String text;
 
+    @Column(name = "topic")
+    private String topic;
+
     @Column(name = "posted_at")
     private Date postedAt;
 }

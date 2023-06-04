@@ -23,5 +23,7 @@ public class PostDto {
     @NotEmpty(message = "Please, enter the text", groups = {PostCreateValidationGroup.class, PostUpdateValidationGroup.class})
     private String text;
 
+    private String topic;
+
     private Date postedAt;
 }

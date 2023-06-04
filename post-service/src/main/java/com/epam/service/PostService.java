@@ -32,6 +32,7 @@ public class PostService {
             post = new Post();
             post.setAuthorId(postDto.getAuthorId());
             post.setText(postDto.getText());
+            post.setTopic(postDto.getTopic());
             post.setPostedAt(new Date());
             post = postRepository.save(post);
 

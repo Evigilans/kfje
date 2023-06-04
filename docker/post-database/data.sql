@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS posts
     post_id   bigint                                             NOT NULL,
     author_id bigint                                             NOT NULL,
     text      text                                               NOT NULL,
+    topic     varchar(255)                                       NULL,
     posted_at timestamp WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT posts_pkey PRIMARY KEY (post_id)
 );
