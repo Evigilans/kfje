@@ -32,7 +32,7 @@ services:
           - "post-database"
 
   userservice:
-    image: evigilans/user-service:1.0.0
+    image: evigilans/user-service:3.0.0
     depends_on:
       user-database:
         condition: service_started
@@ -45,7 +45,7 @@ services:
       - backend
 
   postservice:
-    image: evigilans/post-service:1.0.0
+    image: evigilans/post-service:3.0.0
     depends_on:
       post-database:
         condition: service_started

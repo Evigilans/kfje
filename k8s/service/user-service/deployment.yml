@@ -15,18 +15,39 @@ spec:
     spec:
       containers:
         - name: user-service-container
-          image: evigilans/user-service:1.0.0
+          image: evigilans/user-service:3.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
           volumeMounts:
             - mountPath: /home/evigilans
               name: user-service-pvc-mount
+          envFrom:
+            - secretRef:
+                name: user-service-secret
           env:
-            - name: DB_USERNAME
-              value: "postgres"
-            - name: DB_PASSWORD
-              value: "pstgrpsw"
+            - name: TEST
+              value: "user_test"
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            failureThreshold: 30
+            periodSeconds: 40
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            failureThreshold: 2
+            periodSeconds: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            failureThreshold: 2
+            periodSeconds: 3
+            successThreshold: 1
       volumes:
         - name: user-service-pvc-mount
           persistentVolumeClaim:

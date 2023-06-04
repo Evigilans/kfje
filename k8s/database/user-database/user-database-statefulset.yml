@@ -22,9 +22,38 @@ spec:
           envFrom:
             - configMapRef:
                 name: user-database-configmap
+            - secretRef:
+                name: user-database-secret
           volumeMounts:
-            - mountPath: "/data"
+            - mountPath: /var/lib/postgresql/data
               name: user-database-data
+            - mountPath: /docker-entrypoint-initdb.d
+              name: user-database-initdb
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -h localhost -U postgres
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -h localhost -U postgres
+            failureThreshold: 30
+            periodSeconds: 10
+      volumes:
+        - name: user-database-initdb
+          configMap:
+            name: user-database-configmap
       restartPolicy: Always
   volumeClaimTemplates:
     - metadata:

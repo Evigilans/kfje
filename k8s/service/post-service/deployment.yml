@@ -15,13 +15,34 @@ spec:
     spec:
       containers:
         - name: post-service-container
-          image: evigilans/post-service:1.0.0
+          image: evigilans/post-service:3.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
+          envFrom:
+            - secretRef:
+                name: post-service-secret
           env:
-            - name: DB_USERNAME
-              value: "postgres"
-            - name: DB_PASSWORD
-              value: "pstgrpsw"
+            - name: TEST
+              value: "post_test"
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8082
+            failureThreshold: 30
+            periodSeconds: 40
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8082
+            failureThreshold: 2
+            periodSeconds: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8082
+            failureThreshold: 2
+            periodSeconds: 3
+            successThreshold: 1
       restartPolicy: Always

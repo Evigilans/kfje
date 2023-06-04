@@ -18,6 +18,7 @@ cd ../k8s
 
 echo "Applying namespace"
 kubectl apply -f namespace.yml
+runResource security/ security
 
 echo "Starting databases"
 runResource database/post-database post-database
@@ -32,3 +33,4 @@ runResource service/user-service user-service
 
 sleep 10s
 echo "Services started!"
+kubectl get pods -n kfje-namespace

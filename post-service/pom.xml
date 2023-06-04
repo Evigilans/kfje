@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.epam</groupId>
     <artifactId>post-service</artifactId>
-    <version>1.0.0</version>
+    <version>3.0.0</version>
     <name>post-service</name>
     <description>post-service</description>
     <properties>
@@ -39,6 +39,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-kubernetes-client-all</artifactId>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>

@@ -5,16 +5,25 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:postgresql://user-database:65432/postgres
+    url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     database: POSTGRESQL
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     show-sql: true
+  cloud:
+    kubernetes:
+      discovery:
+        all-namespaces: true
+      secrets:
+        enableApi: true
+      reload:
+        enabled: true
+        monitoring-secrets: true

@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS posts
 (
-    post_id   bigint                    NOT NULL,
-    author_id bigint                    NOT NULL,
-    text      text                      NOT NULL,
-    posted_at date DEFAULT CURRENT_DATE NOT NULL,
+    post_id   bigint                                             NOT NULL,
+    author_id bigint                                             NOT NULL,
+    text      text                                               NOT NULL,
+    posted_at timestamp WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT posts_pkey PRIMARY KEY (post_id)
 );
 
