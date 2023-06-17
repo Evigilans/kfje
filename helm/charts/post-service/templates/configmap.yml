@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: post-service
+  namespace: {{ .Values.global.namespace }}
+data:
+  DB_URL: "{{ template "POST_SERVICE_DB_URL" }}"

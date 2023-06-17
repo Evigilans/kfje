@@ -1,0 +1,4 @@
+replicaCount: 1
+
+container:
+  image: postgres:latest

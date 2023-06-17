@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-service-deployment
+  namespace: {{ .Values.global.namespace }}
+  {{- template "labels" }}
+spec:
+  selector:
+    matchLabels:
+      app: post-service-deployment
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: post-service-deployment
+    spec:
+      containers:
+        - name: post-service-container
+          image: evigilans/post-service:3.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+          envFrom:
+            - secretRef:
+                name: post-service-secret
+          env:
+            - name: TEST
+              value: "post_test"
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8082
+            failureThreshold: 30
+            periodSeconds: 40
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8082
+            failureThreshold: 2
+            periodSeconds: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8082
+            failureThreshold: 2
+            periodSeconds: 3
+            successThreshold: 1
+      restartPolicy: Always

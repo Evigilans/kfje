@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: post-database-statefulset
+  namespace: {{ .Values.global.namespace }}
+  {{- template "labels" }}
+spec:
+  serviceName: post-database-statefulset
+  selector:
+    matchLabels:
+      app: post-database-statefulset
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: post-database-statefulset
+    spec:
+      containers:
+        - name: post-database-statefulset
+          image: {{ .Values.container.image }}
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: post-database-configmap
+            - secretRef:
+                name: post-database-secret
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: post-database-data
+            - mountPath: /docker-entrypoint-initdb.d
+              name: post-database-initdb
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -h localhost -U postgres
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -h localhost -U postgres
+            failureThreshold: 30
+            periodSeconds: 10
+      volumes:
+        - name: post-database-initdb
+          configMap:
+            name: post-database-configmap
+      restartPolicy: Always
+  volumeClaimTemplates:
+    - metadata:
+        name: post-database-data
+      spec:
+        storageClassName: hostpath
+        resources:
+          requests:
+            storage: 10Gi
+        accessModes:
+          - ReadWriteMany

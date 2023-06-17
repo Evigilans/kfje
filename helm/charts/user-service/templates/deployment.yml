@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-deployment
+  namespace: {{ .Values.global.namespace }}
+  {{- template "labels" }}
+spec:
+  selector:
+    matchLabels:
+      app: user-service-deployment
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: user-service-deployment
+    spec:
+      containers:
+        - name: user-service-container
+          image: evigilans/user-service:3.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          volumeMounts:
+            - mountPath: /home/evigilans
+              name: user-service-pvc-mount
+          envFrom:
+            - secretRef:
+                name: user-service-secret
+          env:
+            - name: TEST
+              value: "user_test"
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            failureThreshold: 30
+            periodSeconds: 40
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            failureThreshold: 2
+            periodSeconds: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            failureThreshold: 2
+            periodSeconds: 3
+            successThreshold: 1
+      volumes:
+        - name: user-service-pvc-mount
+          persistentVolumeClaim:
+            claimName: user-service-pvc
+      restartPolicy: Always

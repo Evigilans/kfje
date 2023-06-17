@@ -1,0 +1,18 @@
+apiVersion: v2
+name: kfje-application
+description: A Helm chart for Kubernetes
+type: application
+version: 0.1.0
+dependencies:
+  - name: post-database
+    repository: file://charts/post-database
+    version: 0.1.0
+  - name: post-service
+    repository: file://charts/post-service
+    version: 0.1.0
+  - name: user-database
+    repository: file://charts/user-database
+    version: 0.1.0
+  - name: user-service
+    repository: file://charts/user-service
+    version: 0.1.0
