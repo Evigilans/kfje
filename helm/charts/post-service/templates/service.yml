@@ -4,11 +4,9 @@ metadata:
   name: post-service
   namespace: {{ .Values.global.namespace }}
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: post-service-deployment
   ports:
-    - protocol: TCP
-      port: 8082
+    - port: 8082
       targetPort: 8082
-      nodePort: 32022

@@ -4,11 +4,9 @@ metadata:
   name: user-service
   namespace: {{ .Values.global.namespace }}
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: user-service-deployment
   ports:
-    - protocol: TCP
-      port: 8081
+    - port: 8081
       targetPort: 8081
-      nodePort: 31011
